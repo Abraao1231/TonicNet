@@ -1,0 +1,12 @@
+.. _getting_started:
+getting started
+
+=========================================
+
+To run the project, follow these steps:
+
+.. code-block:: bash
+
+   git clone ""
+   docker-compose build
+   docker-compose up

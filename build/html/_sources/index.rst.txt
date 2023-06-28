@@ -1,0 +1,26 @@
+
+.. _docker_compose:
+.. _docker_install: 
+
+
+Welcome to Gces-tonicNet's documentation!
+=========================================
+
+
+1. Instalar o Docker e o Docker Compose
+
+Como o projeto foi desenvolvido em containers, é necessário instalar o Docker e o Docker Compose. Você pode instalar o Docker pelo link  https://docs.docker.com/compose/install/ e o Docker Compose https://docs.docker.com/engine/install/. Após a instalação, verifique se eles estão corretamente instalados em sua máquina.
+
+2. você pode executar o projeto usando os seguintes comandos:
+
+```bash
+git clone https://github.com/omarperacha/TonicNet.git 
+```
+
+```bash
+docker-compose build 
+```
+
+```bash
+docker-compose up
+``` 
