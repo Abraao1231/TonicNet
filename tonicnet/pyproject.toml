@@ -2,7 +2,7 @@
 name = "tonicnet"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["abraao"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
