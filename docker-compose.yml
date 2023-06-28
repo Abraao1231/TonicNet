@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  db:
+    container_name: dataset
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./src/:/src
+    command: ["python", "main.py", "--sample"]
+
+  tonicnet:
+    container_name: tonicnet
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src/:/src
+
+
