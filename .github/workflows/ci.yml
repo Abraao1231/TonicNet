@@ -39,10 +39,12 @@ jobs:
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="$HOME/.local/bin:$PATH"
 
-      - name: Install project dependencies
+      - name: Install project dependencies and publish
         run: |
+            cd tonicnet
             pip install poetry
             poetry version patch
+            cd ..
             git config user.email "abraao1231@gmail.com"
             git config user.name "Abraao1231"
             git remote add github origin https://github.com/Abraao1231/TonicNet.git
