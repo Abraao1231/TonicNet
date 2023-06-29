@@ -20,4 +20,5 @@ jobs:
       run: 
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && 
         docker build -t abraao1231/tonicnet . &&
+        docker tag abraao1231/tonicnet:latest abraao1231/tonicnet:${{ github.sha }} &&
         docker push abraao1231/tonicnet:latest
