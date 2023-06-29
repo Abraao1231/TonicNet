@@ -42,17 +42,24 @@ jobs:
       - name: Install project dependencies 
         run: |
             pip install poetry
-      - name: change version 
-        run: |      
-            git config user.email "abraao1231@gmail.com"
-            git config user.name "Abraao1231"
-            git remote add github  https://github.com/Abraao1231/TonicNet.git
-            git add .
-            git commit -m "new version poetry"
-            git push github HEAD:main 
-            
-      - name: change version
-        run: cd tonicnet && poetry version patch --build ${{ github.sha }} 
+      - name: Check existing version on PyPI
+        id: check_version
+        run: |
+          cd tonicnet
+          PACKAGE_NAME="tonicnet"
+          PACKAGE_VERSION=$(poetry version --short)
+          RESPONSE_CODE=$(curl --write-out "%{http_code}" --silent --output /dev/null "https://pypi.org/pypi/$PACKAGE_NAME/$PACKAGE_VERSION/json")
+          echo "::set-output name=version_exists::$(if [ $RESPONSE_CODE -eq 200 ]; then echo 'true'; else echo 'false'; fi)"
+       
+      - name: Publish to PyPI
+        run: |
+          VERSION_EXISTS=$(echo "${{ steps.check_version.outputs.version_exists }}" | tr '[:upper:]' '[:lower:]')
+          if [ "$VERSION_EXISTS" = "false" ]; then
+           cd tonicnet
+            poetry build
+           poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+          else
+            echo "Version already exists on PyPI. Skipping upload."
+          fi
 
-      - name: Publish package to PyPI
-        run: cd tonicnet && poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+    
