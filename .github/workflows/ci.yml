@@ -46,7 +46,7 @@ jobs:
         run: cd tonicnet && poetry build
         
       - name: change version
-        run: poetry version ${{ github.sha }}
+        run: cd tonicnet && poetry version ${{ github.sha }}
 
       - name: Publish package to PyPI
         run: cd tonicnet && poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
