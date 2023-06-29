@@ -19,7 +19,7 @@ docker --version
 docker-compose --version
 ```
 
-2. Run project
+2. Run projectss
 
 ```
 git clone https://github.com/omarperacha/TonicNet.git 
