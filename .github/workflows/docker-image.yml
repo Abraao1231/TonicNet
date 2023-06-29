@@ -44,8 +44,10 @@ jobs:
 
   - name: Install project dependencies
     run: pip install poetry
-
+  - name: conf update
+    
   - name: Change directory to tonicnet and build
+  # ADICIONAR AS CONFIGURAÇÕES DO GIT
     run: cd tonicnet && poetry  remove packages && poetry build
 
   - name: Publish package to PyPI
