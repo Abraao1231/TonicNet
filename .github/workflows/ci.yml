@@ -49,7 +49,8 @@ jobs:
       - name: Check existing version on PyPI
         id: check_version
         run: |
-          PACKAGE_NAME="nome-do-seu-pacote"
+          cd tonicnet 
+          PACKAGE_NAME="tonicnet
           PACKAGE_VERSION=$(poetry version --short)
           RESPONSE_CODE=$(curl --write-out "%{http_code}" --silent --output /dev/null "https://pypi.org/pypi/$PACKAGE_NAME/$PACKAGE_VERSION/json")
           echo "::set-output name=version_exists::$(if [ $RESPONSE_CODE -eq 200 ]; then echo 'true'; else echo 'false'; fi)"
