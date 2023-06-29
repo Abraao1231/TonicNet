@@ -38,13 +38,21 @@ jobs:
         run: |
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="$HOME/.local/bin:$PATH"
+          
+
+      - name: Atualizar a versão
+        id: version
+        run: |
+          VERSAO=$(poetry version --short)
+          HASH_COMMIT=$(echo ${{ github.sha }} | head -c 8)
+          NOVA_VERSAO="$VERSAO+${HASH_COMMIT}"
+          echo "::set-output name=nova_versao::$NOVA_VERSAO"
 
       - name: Install project dependencies
         run: pip install poetry
-    
-        
-      - name: change version
-        run: cd tonicnet && poetry version patch --build ${{ github.sha }} 
 
       - name: Publish package to PyPI
-        run: cd tonicnet && poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+        run: |
+          cd tonicnet 
+          poetry build 
+          poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
