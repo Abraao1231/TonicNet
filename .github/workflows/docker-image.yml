@@ -26,14 +26,12 @@ jobs:
         curl -sSL https://install.python-poetry.org | python3 -
         export PATH="$HOME/.local/bin:$PATH"
 
-    - name: Change directory to tonicnet
-      run: cd tonicnet
 
     - name: Install project dependencies
-      run: poetry install --no-root
-
-    - name: Build package
-      run: poetry build
+      run: pip install poetry
+    
+    - name: Change directory to tonicnet and build
+      run: cd tonicnet && poetry build
 
     - name: Publish package to PyPI
       run: poetry publish --username __token__ --password ${{ secrets.POETRY_PASSWORD }}
