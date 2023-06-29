@@ -47,24 +47,33 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          CHANGES=$(git diff --name-only ${{ steps.prev_commit.outputs.commit }} HEAD)
-          echo "::set-output name=changes::${CHANGES}"
+          CHANGES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD)
+          echo "changes=${CHANGES}" >> $GITHUB_ENV
 
       - name: Update version
         id: update_version
         run: |
           cd tonicnet 
-          CHANGES="${{ steps.check_changes.outputs.changes }}"
+          CHANGES="${{ env.CHANGES }}"
           if [ -n "$CHANGES" ]; then
             poetry version patch  # Atualize a versão conforme necessário
           fi
           
-      - name: Publish to PyPI
+      - name: Check if package exists on PyPI
+        id: check_pypi_package
         run: |
-          if [ -n "${{ steps.check_changes.outputs.changes }}" ]; then
-            cd tonicnet
-            poetry build
-            poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+          PACKAGE_NAME="tonicnet"
+          CURRENT_VERSION=$(poetry version --no-ansi | cut -d' ' -f2)
+          LATEST_VERSION=$(poetry search $PACKAGE_NAME | grep -E "^$PACKAGE_NAME\s+\[.*\]\s+[^,]+," | cut -d',' -f2)
+          if [ "$CURRENT_VERSION" == "$LATEST_VERSION" ]; then
+            echo "::set-output name=package_exists::true"
           else
-            echo "No changes. Skipping publishing."
+            echo "::set-output name=package_exists::false"
           fi
+          
+      - name: Publish to PyPI
+        if: steps.check_pypi_package.outputs.package_exists == 'false'
+        run: |
+          cd tonicnet
+          poetry build
+          poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
