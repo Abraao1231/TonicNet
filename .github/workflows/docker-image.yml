@@ -48,7 +48,7 @@ jobs:
     
   - name: Change directory to tonicnet and build
   # ADICIONAR AS CONFIGURAÇÕES DO GIT
-    run: cd tonicnet && poetry  remove packages && poetry build
+    run: cd tonicnet  && poetry build
 
   - name: Publish package to PyPI
     run: cd tonicnet &&  poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
