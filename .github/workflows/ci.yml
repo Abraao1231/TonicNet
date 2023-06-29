@@ -14,6 +14,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - uses: actions/checkout@v3
+      
       - name: Build the Docker image
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
@@ -41,25 +42,29 @@ jobs:
 
       - name: Install project dependencies 
         run: |
-            pip install poetry
-      - name: Check existing version on PyPI
-        id: check_version
+          pip install poetry
+
+      - name: Check for changes
+        id: check_changes
         run: |
-          cd tonicnet
-          PACKAGE_NAME="tonicnet"
-          PACKAGE_VERSION=$(poetry version --short)
-          RESPONSE_CODE=$(curl --write-out "%{http_code}" --silent --output /dev/null "https://pypi.org/pypi/$PACKAGE_NAME/$PACKAGE_VERSION/json")
-          echo "::set-output name=version_exists::$(if [ $RESPONSE_CODE -eq 200 ]; then echo 'true'; else echo 'false'; fi)"
-       
+          CHANGES=$(git diff --name-only ${{ steps.prev_commit.outputs.commit }} HEAD)
+          echo "::set-output name=changes::${CHANGES}"
+
+      - name: Update version
+        id: update_version
+        run: |
+          cd tonicnet 
+          CHANGES="${{ steps.check_changes.outputs.changes }}"
+          if [ -n "$CHANGES" ]; then
+            poetry version patch  # Atualize a versão conforme necessário
+          fi
+          
       - name: Publish to PyPI
         run: |
-          VERSION_EXISTS=$(echo "${{ steps.check_version.outputs.version_exists }}" | tr '[:upper:]' '[:lower:]')
-          if [ "$VERSION_EXISTS" = "false" ]; then
-           cd tonicnet
+          if [ -n "${{ steps.check_changes.outputs.changes }}" ]; then
+            cd tonicnet
             poetry build
-           poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+            poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
           else
-            echo "Version already exists on PyPI. Skipping upload."
+            echo "No changes. Skipping publishing."
           fi
-
-    
