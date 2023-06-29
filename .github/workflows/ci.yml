@@ -24,10 +24,6 @@ jobs:
       - name: Install Poetry
         run: |
           pip install poetry
-          poetry config virtualenvs.create false
-
-      - name: Update version
-        run: poetry version patch  # Atualize a versão conforme necessário
 
       - name: Install project dependencies
         run: poetry install
