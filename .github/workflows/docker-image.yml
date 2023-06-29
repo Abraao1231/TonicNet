@@ -7,31 +7,46 @@ on:
     branches: [ "master" ]
 
 jobs:
-   publish_pypi:
+ build_docker:
     runs-on: ubuntu-latest
     env:
-      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.x
-
-    - name: Install Poetry
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
       run: |
-        curl -sSL https://install.python-poetry.org | python3 -
-        export PATH="$HOME/.local/bin:$PATH"
+        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+        docker build -t abraao1231/tonicnet .
+        docker tag abraao1231/tonicnet:latest abraao1231/tonicnet:${{ github.sha }}
+        docker push abraao1231/tonicnet:latest
+        
+ publish_pypi:
+  runs-on: ubuntu-latest
+  env:
+    PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+
+  steps:
+  - name: Checkout repository
+    uses: actions/checkout@v3
+
+  - name: Set up Python
+    uses: actions/setup-python@v2
+    with:
+      python-version: 3.x
+
+  - name: Install Poetry
+    run: |
+      curl -sSL https://install.python-poetry.org | python3 -
+      export PATH="$HOME/.local/bin:$PATH"
 
 
-    - name: Install project dependencies
-      run: pip install poetry
-    
-    - name: Change directory to tonicnet and build
-      run: cd tonicnet &&poetry version patch  && poetry build
+  - name: Install project dependencies
+    run: pip install poetry
 
-    - name: Publish package to PyPI
-      run: cd tonicnet &&  poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+  - name: Change directory to tonicnet and build
+    run: cd tonicnet &&poetry version patch  && poetry build
+
+  - name: Publish package to PyPI
+    run: cd tonicnet &&  poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
