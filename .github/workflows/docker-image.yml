@@ -19,5 +19,5 @@ jobs:
     - name: Build the Docker image
       run: 
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && 
-        docker build -t tonicnet . &&
-        docker push tonicnet:latest
+        docker build -t abraao1231/tonicnet . &&
+        docker push abraao1231/tonicnet:latest
