@@ -42,11 +42,12 @@ jobs:
       - name: Install project dependencies 
         run: |
             pip install poetry
-      - name: Install project dependencies 
+      - name: change version 
         run: |      
             git config user.email "abraao1231@gmail.com"
             git config user.name "Abraao1231"
             git remote add github  https://github.com/Abraao1231/TonicNet.git
+            git checkout main
             git add .
             git commit -m "new version poetry"
             git push github HEAD:main 
