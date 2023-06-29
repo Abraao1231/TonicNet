@@ -41,7 +41,7 @@ jobs:
           
 
       - name: Update version
-        run: poetry version patch
+        run: cd tonicnet && poetry version patch
 
       - name: Install project dependencies
         run: pip install poetry
