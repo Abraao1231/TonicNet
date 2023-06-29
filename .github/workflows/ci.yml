@@ -41,9 +41,7 @@ jobs:
 
       - name: Install project dependencies
         run: pip install poetry
-      
-      - name: Change directory to tonicnet and build
-        run: cd tonicnet && poetry build
+    
         
       - name: change version
         run: cd tonicnet && poetry version patch --build ${{ github.sha }} 
