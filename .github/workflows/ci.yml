@@ -43,6 +43,7 @@ jobs:
       - name: Atualizar a versão
         id: version
         run: |
+          cd tonicnet 
           VERSAO=$(poetry version --short)
           HASH_COMMIT=$(echo ${{ github.sha }} | head -c 8)
           NOVA_VERSAO="$VERSAO+${HASH_COMMIT}"
