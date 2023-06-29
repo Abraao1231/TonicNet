@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt --verbose
 COPY . .
 
 # Comando a ser executado ao iniciar o container
-CMD ["python",  "main.py", "--sample"]
+CMD ["tail", "-f", "/dev/null"]
