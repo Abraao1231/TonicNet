@@ -34,4 +34,4 @@ jobs:
       run: cd tonicnet && poetry build
 
     - name: Publish package to PyPI
-      run: cd tonicnet && poetry publish --username __token__ --password ${{ secrets.POETRY_PASSWORD }}
+      run: cd tonicnet && poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
