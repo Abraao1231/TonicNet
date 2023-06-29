@@ -22,6 +22,8 @@ jobs:
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
         export PATH="$HOME/.local/bin:$PATH"
+    - name: test
+      run: ls
     - name: Install project dependencies
       run: pip install poetry
     - name: Build package
