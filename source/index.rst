@@ -25,10 +25,13 @@ docker-compose --version
 git clone https://github.com/omarperacha/TonicNet.git 
 ```
 
+3. create image and run container
 ```
-docker-compose build 
-```
+docker-compose up --build
+``` 
+
+4. To execute the project commands, use:
 
 ```
-docker-compose up
-``` 
+docker compose exec -it tonicnet bash
+```

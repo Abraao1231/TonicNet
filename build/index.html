@@ -32,9 +32,9 @@
   <section id="welcome-to-gces-tonicnet-s-documentation">
 <span id="docker-install"></span><span id="docker-compose"></span><h1>Welcome to Gces-tonicNet's documentation!<a class="headerlink" href="#welcome-to-gces-tonicnet-s-documentation" title="Permalink to this heading">¶</a></h1>
 <ol class="arabic simple">
-<li><p>Install  Docker and Docker Composesss</p></li>
+<li><p>Install  Docker and Docker Compose</p></li>
 </ol>
-<p>Since the project was developed in containers, it is necessary to install Docker and Docker Compose. You can install Docker from the link <a class="reference external" href="https://docs.docker.com/compose/install/">https://docs.docker.com/compose/install/</a> and Docker Compose from <a class="reference external" href="https://docs.docker.com/engine/install/">https://docs.docker.com/engine/install/</a>. After installation, please verify if they are correctly installed on your machine.
+<p>Since the project was developed in containersss, it is necessary to install Docker and Docker Compose. You can install Docker from the link <a class="reference external" href="https://docs.docker.com/compose/install/">https://docs.docker.com/compose/install/</a> and Docker Compose from <a class="reference external" href="https://docs.docker.com/engine/install/">https://docs.docker.com/engine/install/</a>. After installation, please verify if they are correctly installed on your machine.
 After installation, check if they are present on your machine.</p>
 <p>Run the following commands to check the versions:</p>
 <p><code class="docutils literal notranslate"><span class="pre">`</span>
@@ -42,16 +42,20 @@ After installation, check if they are present on your machine.</p>
 <span class="pre">docker-compose</span> <span class="pre">--version</span>
 <span class="pre">`</span></code></p>
 <ol class="arabic simple" start="2">
-<li><p>Run project</p></li>
+<li><p>Run projectss</p></li>
 </ol>
 <p><code class="docutils literal notranslate"><span class="pre">`</span>
 <span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/omarperacha/TonicNet.git</span>
 <span class="pre">`</span></code></p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">docker-compose</span> <span class="pre">build</span>
+<p>3. create image and run container
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">--build</span>
 <span class="pre">`</span></code></p>
+<ol class="arabic simple" start="4">
+<li><p>To execute the project commands, use:</p></li>
+</ol>
 <p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">docker-compose</span> <span class="pre">up</span>
+<span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">tonicnet</span> <span class="pre">bash</span>
 <span class="pre">`</span></code></p>
 </section>
 
