@@ -40,14 +40,8 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
           
 
-      - name: Atualizar a versão
-        id: version
-        run: |
-          cd tonicnet 
-          VERSAO=$(poetry version --short)
-          HASH_COMMIT=$(echo ${{ github.sha }} | head -c 8)
-          NOVA_VERSAO="$VERSAO+${HASH_COMMIT}"
-          echo "::set-output name=nova_versao::$NOVA_VERSAO"
+      - name: Update version
+        run: poetry version patch
 
       - name: Install project dependencies
         run: pip install poetry
