@@ -7,21 +7,6 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build_docker:
-    runs-on: ubuntu-latest
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: |
-        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        docker build -t abraao1231/tonicnet .
-        docker tag abraao1231/tonicnet:latest abraao1231/tonicnet:${{ github.sha }}
-        docker push abraao1231/tonicnet:latest
-
   publish_pypi:
     runs-on: ubuntu-latest
     env:
@@ -37,6 +22,8 @@ jobs:
       run: |
         curl -sSL https://install.python-poetry.org | python3 -
         export PATH="$HOME/.local/bin:$PATH"
+    - name: Change to project directory
+      run: cd tonicnet
     - name: Install project dependencies
       run: poetry install --no-root
     - name: Build package
