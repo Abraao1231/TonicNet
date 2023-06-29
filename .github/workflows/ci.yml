@@ -1,34 +1,17 @@
-name: Docker Image and PyPI Publish CI
+name: CI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - main
 
 jobs:
-  build_docker:
+  build:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Build the Docker image
-        run: |
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker build -t abraao1231/tonicnet .
-          docker tag abraao1231/tonicnet:latest abraao1231/tonicnet:${{ github.sha }}
-          docker push abraao1231/tonicnet:latest
 
-  publish_pypi:
-    runs-on: ubuntu-latest
-    env:
-      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -37,43 +20,35 @@ jobs:
 
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Install project dependencies 
-        run: |
           pip install poetry
-
-      - name: Check for changes
-        id: check_changes
-        run: |
-          CHANGES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} HEAD)
-          echo "changes=${CHANGES}" >> $GITHUB_ENV
+          poetry config virtualenvs.create false
 
       - name: Update version
-        id: update_version
+        run: poetry version patch  # Atualize a versão conforme necessário
+
+      - name: Install project dependencies
+        run: poetry install
+
+      - name: Check existing version on PyPI
+        id: check_version
         run: |
-          cd tonicnet 
-          CHANGES="${{ env.CHANGES }}"
-          if [ -n "$CHANGES" ]; then
-            poetry version patch  # Atualize a versão conforme necessário
-          fi
-          
-      - name: Check if package exists on PyPI
-        id: check_pypi_package
-        run: |
-          PACKAGE_NAME="tonicnet"
-          CURRENT_VERSION=$(poetry version --no-ansi | cut -d' ' -f2)
-          LATEST_VERSION=$(poetry search $PACKAGE_NAME | grep -E "^$PACKAGE_NAME\s+\[.*\]\s+[^,]+," | cut -d',' -f2)
-          if [ "$CURRENT_VERSION" == "$LATEST_VERSION" ]; then
-            echo "::set-output name=package_exists::true"
-          else
-            echo "::set-output name=package_exists::false"
-          fi
-          
+          PACKAGE_NAME="nome-do-seu-pacote"
+          PACKAGE_VERSION=$(poetry version --short)
+          RESPONSE_CODE=$(curl --write-out "%{http_code}" --silent --output /dev/null "https://pypi.org/pypi/$PACKAGE_NAME/$PACKAGE_VERSION/json")
+          echo "::set-output name=version_exists::$(if [ $RESPONSE_CODE -eq 200 ]; then echo 'true'; else echo 'false'; fi)"
+
       - name: Publish to PyPI
-        if: steps.check_pypi_package.outputs.package_exists == 'false'
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          cd tonicnet
-          poetry build
-          poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+          VERSION_EXISTS=$(echo "${{ steps.check_version.outputs.version_exists }}" | tr '[:upper:]' '[:lower:]')
+          if [ "$VERSION_EXISTS" = "false" ]; then
+             cd tonicnet
+            poetry build
+            poetry publish --username Abraao1231 --password ${{ secrets.POETRY_PASSWORD }}
+          else
+            echo "Version already exists on PyPI. Skipping upload."
+          fi
+
+      
